@@ -1,0 +1,69 @@
+#define BLYNK_TEMPLATE_ID "TMPL3vK0Yv2N-"  // These lines of code from Blynk Application
+#define BLYNK_TEMPLATE_NAME "Battery monitoring System"
+#define BLYNK_AUTH_TOKEN "_JVNw8oRvpa7NvdVEggrJBilJpPGR8pn"
+// #include "MapFloat.h"
+#define BLYNK_PRINT Serial
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
+BlynkTimer timer;
+
+
+const float voltageVirtualPin = V0;
+const float currentVirtualPin = V1;
+
+#define VoltagePin 33
+float voltageCaliber = 1;
+const float VCC   = 5.0;
+#define CurrentPin 4
+
+
+char auth[] = BLYNK_AUTH_TOKEN;
+char ssid[] = " ";// Wifi Name
+char pass[] = " ";// Wifi Password
+
+float Total_Voltage;
+
+
+void myTimer() 
+{
+  
+  //Volatge
+float read = analogRead(VoltagePin);
+float volt = (3.3/4095.0) * read;
+float volt_new = volt * 122 /22;
+float Total_Voltage = volt_new*voltageCaliber;
+
+
+//Current
+ int adc = analogRead(CurrentPin);
+ float voltage = adc * 3.3/4095.0;
+ float current = (voltage - 2.5) / 0.066;
+
+Serial.print("Current=");
+Serial.print(current,3);
+Serial.print("A");
+
+Serial.print("Voltage = ");
+Serial.print(Total_Voltage);
+Serial.println("V");
+  Blynk.virtualWrite(voltageVirtualPin,Total_Voltage); 
+  Blynk.virtualWrite( currentVirtualPin,current); 
+}
+
+
+
+void setup() {
+  
+Serial.begin(115200);
+pinMode(VoltagePin, INPUT);
+pinMode(CurrentPin,INPUT);
+Blynk.begin(auth, ssid, pass, "blynk.cloud", 80);
+timer.setInterval(1000L, myTimer); 
+}
+
+void loop() {
+Blynk.run();
+timer.run(); 
+
+}
