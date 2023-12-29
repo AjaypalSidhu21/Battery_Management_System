@@ -1,7 +1,9 @@
-#define BLYNK_TEMPLATE_ID "TMPL3vK0Yv2N-"  // These lines of code from Blynk Application
+#Battery Management System(Voltage and Current)
+
+#define BLYNK_TEMPLATE_ID "TMPL3vK0Yv2N-"  // First Three lines of code from Blynk Application
 #define BLYNK_TEMPLATE_NAME "Battery monitoring System"
 #define BLYNK_AUTH_TOKEN "_JVNw8oRvpa7NvdVEggrJBilJpPGR8pn"
-// #include "MapFloat.h"
+
 #define BLYNK_PRINT Serial
 #include <WiFi.h>
 #include <WiFiClient.h>
@@ -27,7 +29,6 @@ float Total_Voltage;
 
 void myTimer() 
 {
-  
   //Volatge
 float read = analogRead(VoltagePin);
 float volt = (3.3/4095.0) * read;
@@ -47,6 +48,7 @@ Serial.print("A");
 Serial.print("Voltage = ");
 Serial.print(Total_Voltage);
 Serial.println("V");
+
   Blynk.virtualWrite(voltageVirtualPin,Total_Voltage); 
   Blynk.virtualWrite( currentVirtualPin,current); 
 }
